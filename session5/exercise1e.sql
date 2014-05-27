@@ -1,0 +1,2 @@
+DELETE FROM Boek
+	WHERE isbn='4321';

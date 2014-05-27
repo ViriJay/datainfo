@@ -1,0 +1,25 @@
+CREATE TABLE Boek(
+	isbn VARCHAR(20) NOT NULL,
+	titel VARCHAR(50) NOT NULL,
+	auteur VARCHAR(30) NOT NULL,
+	PRIMARY KEY (isbn)
+);
+
+CREATE TABLE Exemplaar(
+	isbn VARCHAR(20)  NOT NULL,
+	volgnummer INT NOT NULL,
+	gewicht INT NOT NULL,
+	kast VARCHAR(10) NOT NULL,
+	FOREIGN KEY (isbn) REFERENCES Boek(isbn) ON UPDATE CASCADE
+);
+
+CREATE OR REPLACE FUNCTION delete_exp() RETURNS trigger AS $$
+begin
+	DELETE FROM Exemplaar WHERE isbn = OLD.isbn;
+	RETURN OLD;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tdelete BEFORE DELETE on Boek	
+FOR EACH ROW 
+EXECUTE PROCEDURE delete_exp(OLD);
